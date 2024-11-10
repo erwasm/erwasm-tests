@@ -47,4 +47,14 @@ describe('UTF-8 decoder', () => {
     expect(decode_u8(0xF0, 0x9F, 0x8C, 0x9E)).toBe(0x1f31e);
   });
 
+  it.each([
+    ['X'],
+    ['ї'],
+    ['つ'],
+    ['🌞']
+  ])('should decode "%s" codepoint from utf8 representation', async (symbol) => {
+    const utf8Buffer = Array.from(Buffer.from(symbol));
+    const decode_u8 = await erwImport('unicode_example', 'decode_u8_bin', 1);
+    expect(decode_u8(utf8Buffer)).toBe(symbol.codePointAt(0));
+  })
 });

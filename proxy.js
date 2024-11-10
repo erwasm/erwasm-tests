@@ -27,10 +27,39 @@ const rawAdapter = {
   },
 };
 
+function isMemArray(data) {
+  return data.every((el) => (typeof el) === 'number' && el < 0xFF);
+}
+
+function tag2(value, tag) {
+  return (value << 2) | tag;
+}
+
+function tag4(value, tag) {
+  return (value << 4) | tag;
+}
+
+function encodeBinPtr(ptr) {
+  return tag2(ptr, 2);
+}
+
+function transferArray(mod, x) {
+  const mem = new DataView(mod.instance.exports.memory.buffer);
+  const allocBin = mod.instance.exports['minibeam#alloc_binary_1'];
+  const memPtr = allocBin(x.length);
+  for(let idx in x) {
+    mem.setUint8(memPtr + 8 + Number(idx), x[idx]);
+  }
+  return encodeBinPtr(memPtr);
+}
+
 const encodeAdapter = {
   encode(mod, x) {
     if ((typeof x)  === 'number') {
-      return (x << 4) | 0xF;
+      return tag4(x, 0xF);
+    }
+    if (Array.isArray(x) && isMemArray(x)) {
+      return transferArray(mod, x);
     }
     return x;
   },
