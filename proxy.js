@@ -2,16 +2,19 @@ import { execSync } from 'child_process';
 import fs from 'node:fs';
 
 // lazy platform shim
-const provides = {
+const provides = (getMod) => ({
   'wasi:cli/stdout@0.2.0': {
     'get-stdout': () => 0,
   },
   'wasi:io/streams@0.2.0' :{
-    '[method]output-stream.blocking-write-and-flush': (...args) => {
-      console.log('cli stdout call', ...args);
+    '[method]output-stream.blocking-write-and-flush': (_stream, memPtr, memLen, retPtr) => {
+      const mod = getMod();
+      const mem = mod.instance.exports.memory.buffer;
+      const piece = new Buffer(mem.slice(memPtr, memPtr + memLen));
+      console.log(piece.toString());
     },
   }
-};
+});
 
 
 
@@ -41,7 +44,9 @@ const encodeAdapter = {
 
 export async function erwImport(modName, funcName, arity, raw) {
   const wasmBuffer = fs.readFileSync(`./esrc/${modName}.fat.wasm`);
-  const mod = await WebAssembly.instantiate(wasmBuffer, provides);
+  const mod = await WebAssembly.instantiate(wasmBuffer, provides(
+    () => mod
+  ));
   const func = mod.instance.exports[`${modName}#${funcName}_${arity}`];
   const adapter = raw ? rawAdapter : encodeAdapter;
   return (...args) => {
