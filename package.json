@@ -1,0 +1,14 @@
+{
+  "name": "erwasm-tests",
+  "version": "1.0.0",
+  "description": "Test suite for erwasm compiler",
+  "main": "index.js",
+  "scripts": {
+    "test": "vitest"
+  },
+  "author": "Illya Petrov",
+  "license": "MIT",
+  "devDependencies": {
+    "vitest": "^2.1.4"
+  }
+}
