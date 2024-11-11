@@ -57,4 +57,39 @@ describe('UTF-8 decoder', () => {
     const decode_u8 = await erwImport('unicode_example', 'decode_u8_bin', 1);
     expect(decode_u8(utf8Buffer)).toBe(symbol.codePointAt(0));
   })
+
+  it.each([
+    ['X'],
+    ['ї'],
+    ['つ'],
+    ['🌞']
+  ])('should encode "%s" into utf8 representation', async (symbol) => {
+    const codePoint = symbol.codePointAt(0);
+    const encode_u8 = await erwImport('unicode_example', 'encode_u8', 1);
+    const jsBuffer = Buffer.from(symbol, 'utf8');
+    expect(encode_u8(codePoint)).toEqual(jsBuffer);
+  });
+
+  it.each([
+    ['X'],
+    ['ї'],
+    ['つ'],
+    ['🌞']
+  ])('should encode "%s" into utf16 be representation', async (symbol) => {
+    const codePoint = symbol.codePointAt(0);
+    const encode_u16 = await erwImport('unicode_example', 'encode_u16', 1);
+    const jsBufferLe = Buffer.from(symbol, 'utf16le');
+    const jsBufferBe = new Buffer(jsBufferLe.length);
+
+    let idx = 0;
+    while(idx < jsBufferLe.length) {
+      let pair = jsBufferLe.readUInt16LE(idx);
+      jsBufferBe.writeUInt16BE(pair, idx);
+      idx += 2;
+    }
+
+    const eBuffer = Buffer.from(encode_u16(codePoint));
+    expect(eBuffer).toEqual(jsBufferBe);
+  });
+
 });

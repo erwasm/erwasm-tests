@@ -8,6 +8,8 @@ DEPS=erwasm/minibeam/math.wat \
   erwasm/minibeam/shim.wat \
   erwasm/minibeam/minibeam_bs.wat
 
+JSONE=vendor/jsone_decode.wat vendor/jsone_encode.wat
+
 SOURCES_SYNC=$(SOURCES) $(DEPS) sync-entry.wat
 
 %.S: %.erl
@@ -19,7 +21,13 @@ SOURCES_SYNC=$(SOURCES) $(DEPS) sync-entry.wat
 %.wasm: %.wat
 	wat2wasm $< -o $@
 
+jsone%.fat.wat: jsone%.wat $(JSONE)
+	python watcat/watmerge.py $@ $< $(DEPS) $(JSONE)
+
 %.fat.wat: %.wat
 	python watcat/watmerge.py $@ $< $(DEPS)
+
+clean:
+	rm -f {vendor,esrc}/*.{S,wat,wasm}
 
 all: elib.fat.wasm
