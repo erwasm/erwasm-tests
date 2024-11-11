@@ -6,11 +6,17 @@ describe('Test json encoder', () => {
     erwCompile('esrc/jsone2_example');
   });
 
-  // TODO: encode the normal integers, not hex
-  it('should encode a number (broken)', async () => {
+  it.each([
+    [0],
+    [5],
+    [10],
+    [19761],
+    [300400],
+    [(1 << 28) - 1],
+  ])('should encode %i in json', async (number) => {
     const encode = await erwImport('jsone2_example', 'encode', 1);
-    expect(Buffer.from(encode(5)).toString('binary'))
-      .toBe("0x00000005");
+    expect(Buffer.from(encode(number)).toString('binary'))
+      .toBe(String(number));
   });
 
   // TODO: fix the nagatives
@@ -43,8 +49,8 @@ describe('Test json encoder', () => {
 
   it('should encode a list of strings mixed with numbers', async () => {
     const example = await erwImport('jsone2_example', 'example', 2);
-    expect(example(2, 0xFF).toString('binary'))
-      .toBe('["N1",0x00000002,0x000000FF,"TailN"]');
+    expect(example(2, 35).toString('binary'))
+      .toBe('["N1",2,35,"TailN"]');
   });
 
   it('should encode a string with Cyrillic character', async () => {
