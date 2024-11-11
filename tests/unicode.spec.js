@@ -1,92 +1,51 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import { erwImport, erwCompile } from '../proxy';
 
+beforeAll(() => {
+  erwCompile('esrc/unicode_example');
+});
+
 describe('UTF-8 decoder', () => {
-  beforeAll(() => {
-    erwCompile('esrc/unicode_example');
+
+  it('should return base plane (ASCII) codepoint as is', async () => {
+    const decode_u8 = await erwImport('unicode_example', 'decode_u8', 1);
+    expect(decode_u8(0x33)).toBe(0x33);
   });
 
-  describe('utf8', () => {
-    it('should return base plane (ASCII) codepoint as is', async () => {
-      const decode_u8 = await erwImport('unicode_example', 'decode_u8', 1);
-      expect(decode_u8(0x33)).toBe(0x33);
-    });
-
-    /*
-    Python:
-    >>> 'ф'.encode('utf8')
-    b'\xd1\x84'
-    >>> hex(ord('ф'))
-    '0x444'
-    */
-    it('should return codepoint for Cyrilic Ф', async () => {
-      const decode_u8 = await erwImport('unicode_example', 'decode_u8', 2);
-      expect(decode_u8(0xD1, 0x84)).toBe(0x444);
-    });
-
-    /*
-    Python:
-    >>> 'つ'.encode('utf8')
-    b'\xe3\x81\xa4'
-    >>> hex(ord('つ'))
-    '0x3064'
-    */
-    it('should return codepoint for Hiragana つ', async () => {
-      const decode_u8 = await erwImport('unicode_example', 'decode_u8', 3);
-      expect(decode_u8(0xE3, 0x81, 0xA4)).toBe(0x3064);
-    });
-
-    /*
-    Python:
-    >>> '🌞'.encode('utf8')
-    b'\xf0\x9f\x8c\x9e'
-    >>> hex(ord('🌞'))
-    '0x1f31e'
-    */
-    it('should return codepoint for sun emoji 🌞', async () => {
-      const decode_u8 = await erwImport('unicode_example', 'decode_u8', 4);
-      expect(decode_u8(0xF0, 0x9F, 0x8C, 0x9E)).toBe(0x1f31e);
-    });
+  /*
+  Python:
+  >>> 'ф'.encode('utf8')
+  b'\xd1\x84'
+  >>> hex(ord('ф'))
+  '0x444'
+  */
+  it('should return codepoint for Cyrilic Ф', async () => {
+    const decode_u8 = await erwImport('unicode_example', 'decode_u8', 2);
+    expect(decode_u8(0xD1, 0x84)).toBe(0x444);
   });
 
-  describe('utf16', () => {
-    /*
-    Python:
-    >>> 'ф'.encode('utf16').hex()[4:]
-    '4404'
-    >>> hex(ord('ф'))
-    '0x444'
-    */
-    it('should return codepoint for Cyrilic Ф', async () => {
-      const decode_u16 = await erwImport('unicode_example', 'decode_u16', 2);
-      expect(decode_u16(0x44, 0x04)).toBe(0x444);
-    });
+  /*
+  Python:
+  >>> 'つ'.encode('utf8')
+  b'\xe3\x81\xa4'
+  >>> hex(ord('つ'))
+  '0x3064'
+  */
+  it('should return codepoint for Hiragana つ', async () => {
+    const decode_u8 = await erwImport('unicode_example', 'decode_u8', 3);
+    expect(decode_u8(0xE3, 0x81, 0xA4)).toBe(0x3064);
+  });
 
-
-    /*
-    Python:
-    >>> 'つ'.encode('utf16').hex()[4:]
-    '6430'
-    >>> hex(ord('つ'))
-    '0x3064'
-    */
-    it('should return codepoint for Hiragana つ', async () => {
-      const decode_u16 = await erwImport('unicode_example', 'decode_u16', 2);
-      expect(decode_u16(0x64, 0x30)).toBe(0x3064);
-    });
-
-    /*
-    >>> '🌞'.encode('utf16').hex()[4:]
-    '3cd81edf'
-    >>> hex(ord('🌞'))
-    '0x1f31e'
-    */
-    it('should return codepoint for sun emoji 🌞' , async () => {
-      const decode_u16 = await erwImport('unicode_example', 'decode_u16', 4);
-      expect(decode_u16(0x3c, 0xd8, 0x1e, 0xdf))
-        .toBe(0x1f31e);
-    });
-
+  /*
+  Python:
+  >>> '🌞'.encode('utf8')
+  b'\xf0\x9f\x8c\x9e'
+  >>> hex(ord('🌞'))
+  '0x1f31e'
+  */
+  it('should return codepoint for sun emoji 🌞', async () => {
+    const decode_u8 = await erwImport('unicode_example', 'decode_u8', 4);
+    expect(decode_u8(0xF0, 0x9F, 0x8C, 0x9E)).toBe(0x1f31e);
   });
 
   it.each([
@@ -100,6 +59,50 @@ describe('UTF-8 decoder', () => {
     expect(decode_u8(utf8Buffer)).toBe(symbol.codePointAt(0));
   })
 
+});
+
+describe('UTF-16 decoder', () => {
+  /*
+  Python:
+  >>> 'ф'.encode('utf16').hex()[4:]
+  '4404'
+  >>> hex(ord('ф'))
+  '0x444'
+  */
+  it('should return codepoint for Cyrilic Ф', async () => {
+    const decode_u16 = await erwImport('unicode_example', 'decode_u16', 2);
+    expect(decode_u16(0x44, 0x04)).toBe(0x444);
+  });
+
+
+  /*
+  Python:
+  >>> 'つ'.encode('utf16').hex()[4:]
+  '6430'
+  >>> hex(ord('つ'))
+  '0x3064'
+  */
+  it('should return codepoint for Hiragana つ', async () => {
+    const decode_u16 = await erwImport('unicode_example', 'decode_u16', 2);
+    expect(decode_u16(0x64, 0x30)).toBe(0x3064);
+  });
+
+  /*
+  >>> '🌞'.encode('utf16').hex()[4:]
+  '3cd81edf'
+  >>> hex(ord('🌞'))
+  '0x1f31e'
+  */
+  it('should return codepoint for sun emoji 🌞' , async () => {
+    const decode_u16 = await erwImport('unicode_example', 'decode_u16', 4);
+    expect(decode_u16(0x3c, 0xd8, 0x1e, 0xdf))
+      .toBe(0x1f31e);
+  });
+
+});
+
+describe('UTF-8 encoder', () => {
+
   it.each([
     ['X'],
     ['ї'],
@@ -111,7 +114,9 @@ describe('UTF-8 decoder', () => {
     const jsBuffer = Buffer.from(symbol, 'utf8');
     expect(encode_u8(codePoint)).toEqual(jsBuffer);
   });
+});
 
+describe('UTF-16 encoder', () => {
   it.each([
     ['X'],
     ['ї'],
@@ -133,5 +138,4 @@ describe('UTF-8 decoder', () => {
     const eBuffer = Buffer.from(encode_u16(codePoint));
     expect(eBuffer).toEqual(jsBufferBe);
   });
-
 });
