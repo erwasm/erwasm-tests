@@ -84,4 +84,73 @@ describe('Test json encoder', () => {
       .toBe('"01"');
   });
 
+
+  it('should encode erlang string literal as a list of ASCII codes because of erlang reasons', async () => {
+    const example = await erwImport('jsone2_example', 'example', 1);
+    const output = example(2);
+
+    const expectedOutput = Array.from('ASCII')
+      .map((symbol) => symbol.codePointAt(0));
+
+    expect(output.toString('utf8'))
+      .toEqual(JSON.stringify(expectedOutput));
+
+    // same but hardcoded for visibility
+    expect(output.toString('utf8')).toEqual('[65,83,67,73,73]');
+
+  });
+
+  it('should encode erlang string literal as a list of code points codes because of erlang reasons', async () => {
+    const example = await erwImport('jsone2_example', 'example', 1);
+    const output = example(22);
+
+    const expectedOutput = Array.from('Ґанок')
+      .map((symbol) => symbol.codePointAt(0));
+
+    expect(output.toString('utf8'))
+      .toEqual(JSON.stringify(expectedOutput));
+
+    // same but hardcoded for visibility
+    expect(output.toString('utf8')).toEqual('[1168,1072,1085,1086,1082]');
+  });
+
+  it('should encode erlang string literal inside a list as a list of ASCII codes because of erlang reasons', async () => {
+    const example = await erwImport('jsone2_example', 'example', 1);
+    const output = example(3);
+
+    const expectedOutput = Array.from('ASCII')
+      .map((symbol) => symbol.codePointAt(0));
+
+    expect(output.toString('utf8'))
+      .toEqual(JSON.stringify(['N1', expectedOutput]));
+
+    // same but hardcoded for visibility
+    expect(output.toString('utf8')).toEqual('["N1",[65,83,67,73,73]]');
+  });
+
+  it('should encode prop list as an object', async () => {
+    const example = await erwImport('jsone2_example', 'example', 1);
+    const output = example(4);
+
+    expect(output.toString('utf8'))
+      .toEqual('{"x":1}');
+  });
+
+  it('should NOT encode prop list with string keys as an object', async () => {
+    const example = await erwImport('jsone2_example', 'example', 1);
+    const output = example(5);
+
+    expect(output.toString('utf8'))
+      .toEqual('Encoding error');
+  });
+
+  // TODO: implement ato to string in minibeam
+  it.skip('should encode prop list with atom keys as an object', async () => {
+    const example = await erwImport('jsone2_example', 'example', 1);
+    const output = example(6);
+
+    expect(output.toString('utf8'))
+      .toEqual('Encoding error');
+  });
+
 });

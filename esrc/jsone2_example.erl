@@ -14,13 +14,20 @@ encode(N) ->
 
 data(N) ->
   case N of
-   1 -> [<<"String 1">>, <<"Another one">>, <<"One more">>]
+   1 -> [<<"String 1">>, <<"Another one">>, <<"One more">>];
+   2 -> "ASCII"; % beware, this is secretly an array
+   22 -> "Ґанок"; % beware, this is secretly an array
+   3 -> [<<"N1">>, "ASCII"];
+   4 -> { [ { <<"x">>, 1 } ] };
+   5 -> { [ { "x", 1 } ] } ; % this will not encode
+   6 -> { [ { xatom, 1 } ] } % needs atom to string TBD
   end.
 
 example(N) ->
-  { ok, Data } = jsone_encode:encode(data(N)),
-  Data.
-
+  case jsone_encode:encode(data(N)) of
+    { ok, Data } -> Data;
+    _Else -> <<"Encoding error">>
+  end.
 
 example(N, InData) ->
   Input = case N of
