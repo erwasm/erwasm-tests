@@ -1,6 +1,6 @@
 import { execSync } from 'child_process';
 import fs from 'node:fs';
-import { fromBuffer } from './proxy';
+import { fromBuffer, string } from './proxy';
 
 export function erwImport(modName, raw=false) {
   return fromBuffer(
@@ -13,3 +13,5 @@ export function erwImport(modName, raw=false) {
 export function erwCompile(modName) {
   execSync(`make ${modName}.fat.wasm`);
 }
+
+export { string };

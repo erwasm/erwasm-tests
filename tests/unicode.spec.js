@@ -1,8 +1,10 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import { erwImport, erwCompile } from '../loader';
+import { erwImport, erwCompile, string } from '../loader';
 
 erwCompile('esrc/unicode_example');
 const { decode_u8, encode_u8, decode_u8_bin, decode_u16, encode_u16 } = await erwImport('unicode_example');
+
+const encoder = new TextEncoder();
 
 describe('UTF-8 decoder', async () => {
 
@@ -100,7 +102,7 @@ describe('UTF-8 encoder', () => {
     ['🌞']
   ])('should encode "%s" into utf8 representation', (symbol) => {
     const codePoint = symbol.codePointAt(0);
-    const jsBuffer = Buffer.from(symbol, 'utf8');
+    const jsBuffer = encoder.encode(symbol);
     expect(encode_u8(codePoint)).toEqual(jsBuffer);
   });
 });

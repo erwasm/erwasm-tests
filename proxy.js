@@ -1,3 +1,6 @@
+const encoder = new TextEncoder();
+export const decoderUtf8 = new TextDecoder();
+
 // lazy platform shim
 const provides = (getMod) => ({
   'wasi:cli/stdout@0.2.0': {
@@ -7,8 +10,8 @@ const provides = (getMod) => ({
     '[method]output-stream.blocking-write-and-flush': (_stream, memPtr, memLen, retPtr) => {
       const mod = getMod();
       const mem = mod.instance.exports.memory.buffer;
-      const piece = new Buffer(mem.slice(memPtr, memPtr + memLen));
-      console.log(piece.toString());
+      const piece = new Uint8Array(mem.slice(memPtr, memPtr + memLen));
+      console.log(decoderUtf8.decode(piece));
     },
   }
 });
@@ -63,7 +66,7 @@ function readHeapArray(mod, ptr) {
   const mem = new DataView(mod.instance.exports.memory.buffer);
   const lenBits = readLe32(mem, ptr + 4);
   const lenBytes = lenBits >>> 3;
-  const ret = new Buffer(lenBytes);
+  const ret = new Uint8Array(lenBytes);
   let idx = 0;
   while(idx < lenBytes) {
     ret[idx] = readLe32(mem, ptr + 8 + idx);
@@ -89,7 +92,7 @@ function readAtom(mod, id) {
     throw new Error('Invariant failure. Should either return mem or panic');
   }
   const buffer = readMemPtr(mod, ptr >>> 2);
-  return Symbol.for(buffer.toString('utf8'));
+  return Symbol.for(decoderUtf8.decode(buffer));
 }
 
 const encodeAdapter = {
@@ -99,6 +102,9 @@ const encodeAdapter = {
     }
     if (Array.isArray(x) && isMemArray(x)) {
       return transferArray(mod, x);
+    }
+    if ((typeof x) === 'string') {
+      return transferArray(mod, encoder.encode(x));
     }
     return x;
   },
@@ -148,4 +154,8 @@ export async function fromResponse(modName, response, raw) {
     () => mod
   ));
   return makeProxy(mod, modName, raw);
+}
+
+export function string(buffer) {
+  return decoderUtf8.decode(buffer);
 }
