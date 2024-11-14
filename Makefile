@@ -24,6 +24,9 @@ SOURCES_SYNC=$(SOURCES) $(DEPS) sync-entry.wat
 jsone%.fat.wat: jsone%.wat $(JSONE)
 	python watcat/watmerge.py $@ $< $(DEPS) $(JSONE)
 
+atom%.fat.wat: atom%.wat esrc/datalib.erl esrc/datalib.wat
+	python watcat/watmerge.py $@ $< $(DEPS) esrc/datalib.wat
+
 %.fat.wat: %.wat
 	python watcat/watmerge.py $@ $< $(DEPS)
 

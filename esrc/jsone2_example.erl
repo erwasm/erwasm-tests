@@ -18,6 +18,7 @@ data(N) ->
    2 -> "ASCII"; % beware, this is secretly an array
    22 -> "Ґанок"; % beware, this is secretly an array
    3 -> [<<"N1">>, "ASCII"];
+   32 -> [<<"N1">>, ascii];
    4 -> { [ { <<"x">>, 1 } ] };
    5 -> { [ { "x", 1 } ] } ; % this will not encode
    6 -> { [ { xatom, 1 } ] } % needs atom to string TBD
