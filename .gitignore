@@ -3,3 +3,4 @@ vendor/*.wat
 vendor/*.S
 esrc/*fat.wasm
 esrc/*.wat
+esrc/*beam

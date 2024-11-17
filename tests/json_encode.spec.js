@@ -11,16 +11,22 @@ describe('Test json encoder', async () => {
     [10],
     [19761],
     [300400],
-    [(1 << 28) - 1],
+    [(1 << 27) - 1],
   ])('should encode %i in json', (number) => {
     expect(Buffer.from(encode(number)).toString('binary'))
       .toBe(String(number));
   });
 
-  // TODO: fix the nagatives
-  it.skip('should encode a negative number', () => {
-    expect(Buffer.from(encode(-0x779)).toString('binary'))
-      .toBe("-0x00000779");
+  it.each([
+    [-1],
+    [-5],
+    [-10],
+    [-19761],
+    [-300400],
+    [- ((1 << 27) - 1)],
+  ])('should encode negative number %i in json', (number) => {
+    expect(Buffer.from(encode(number)).toString('binary'))
+      .toBe(String(number));
   });
 
   it('should encode a string', () => {

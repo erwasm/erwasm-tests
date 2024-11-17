@@ -95,6 +95,14 @@ function readAtom(mod, id) {
   return Symbol.for(decoderUtf8.decode(buffer));
 }
 
+function readException(mod, adapter) {
+  const mem = new DataView(mod.instance.exports.memory.buffer);
+  const ptr = mod.instance.exports['__exception'].value;
+  const value = readLe32(mem, ptr + 4);
+  mod.instance.exports['__exception'].value = 0;
+  return adapter.decode(mod, value);
+}
+
 const encodeAdapter = {
   encode(mod, x) {
     if ((typeof x)  === 'number') {
@@ -109,6 +117,9 @@ const encodeAdapter = {
     return x;
   },
   decode(mod, x) {
+    if (x === -256) {
+      throw new Error(readException(mod, this).toString());
+    }
     if ((x & 0xF) === 0xF) {
       return (x >>> 4);
     }
