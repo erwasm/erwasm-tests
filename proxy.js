@@ -106,7 +106,11 @@ function readException(mod, adapter) {
   mem.setUint32(ptr + 4, 0);
   mem.setUint32(ptr + 8, 0);
   return [adapter.decode(mod, value)];// adapter.decode(mod, reason)];
+}
 
+function printTrace(mod) {
+  const func = mod.instance.exports['minibeam#print_trace_0'];
+  func();
 }
 
 const encodeAdapter = {
@@ -125,6 +129,7 @@ const encodeAdapter = {
   decode(mod, x) {
     if (x === -256) {
       const [exType, exReason] = readException(mod, this);
+      printTrace(mod);
       throw new Error(exType.toString());
     }
     if ((x & 0xF) === 0xF) {
