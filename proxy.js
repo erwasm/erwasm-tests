@@ -92,7 +92,12 @@ function readAtom(mod, id) {
     throw new Error('Invariant failure. Should either return mem or panic');
   }
   const buffer = readMemPtr(mod, ptr >>> 2);
-  return Symbol.for(decoderUtf8.decode(buffer));
+  const atom = decoderUtf8.decode(buffer);
+  const constants = {
+    'false': false,
+    'true': true,
+  };
+  return (atom in constants) ? constants[atom] : Symbol.for(atom);
 }
 
 function readException(mod, adapter) {

@@ -17,11 +17,11 @@ describe('Global exception handler', async () => {
 
 describe('Caller exception handler', async () => {
   it('should return true when match succeeds', () => {
-    expect(catch_fail(0)).toBe(Symbol.for('true'));
+    expect(catch_fail(0)).toBe(true);
   });
 
   it('should return false when caller\'s exception handler for badarg catches it', () => {
-    expect(catch_fail(1)).toBe(Symbol.for('false'));
+    expect(catch_fail(1)).toBe(false);
   });
 
   it('should return weird when calle\'s catchall handler catches it', () => {
@@ -32,11 +32,11 @@ describe('Caller exception handler', async () => {
 
 describe('Caller exception with raise', async () => {
   it('should return true when match succeeds', () => {
-    expect(catch_some(0)).toBe(Symbol.for('true'));
+    expect(catch_some(0)).toBe(true);
   });
 
   it('should return false when caller\'s exception handler for badarg catches it', () => {
-    expect(catch_some(1)).toBe(Symbol.for('false'));
+    expect(catch_some(1)).toBe(false);
   });
 
   it('should throw exceptions not cough by caller', () => {
