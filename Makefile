@@ -15,6 +15,10 @@ SOURCES_SYNC=$(SOURCES) $(DEPS) sync-entry.wat
 %.S: %.erl
 	erlc -DNO_MAP_TYPE -S -o $(shell dirname $<) $<
 
+%.S: %.ex
+	env ERL_COMPILER_OPTIONS="'S'" elixirc $< 2> /dev/null ; [ "$(shell basename $<)".S -nt $< ]
+	mv "$(shell basename $<).S" $@
+
 %.wat: %.S
 	python erwasm/erwasmc.py $< $@
 
