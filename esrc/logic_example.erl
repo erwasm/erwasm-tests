@@ -14,8 +14,7 @@ data(N) ->
 
 example(An, Bn, Op) ->
   case Op of
-    %% FIXME: changing this to lazy-end or land1 breaks everything
-    <<"land">> -> data(An) andalso data(Bn);
+    <<"lazy-and">> -> data(An) andalso data(Bn);
     <<"and">> -> data(An) and data(Bn);
     <<"lor">> -> data(An) orelse data(Bn);
     <<"or">> -> data(An) or data(Bn)

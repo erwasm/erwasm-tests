@@ -13,13 +13,13 @@ describe('Test logic operators', async () => {
       [1, 1, true],
     ];
     it.each(table)('should evaluate %s and %s to %s', (a, b, ret) => {
-      expect(example(a, b, 'land'))
+      expect(example(a, b, 'lazy-and'))
         .toBe(ret)
     });
 
     it('should stop evaluation as soon as false is found on the left side', () => {
       // 3 doesn't have an atom mapped to it
-      expect(example(0, 3, 'land'))
+      expect(example(0, 3, 'lazy-and'))
         .toBe(false)
     });
 

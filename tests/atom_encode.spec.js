@@ -8,10 +8,10 @@ describe('Test atom encoder', async () => {
 
   it('should return internal representation of an atom (raw)', () => {
     expect(exampleRaw(0x1F))
-      .toBe((1 << 6) | 0xB)
+      .toBe((5 << 6) | 0xB)
   });
 
-  it.only('should return a symbol corresponding to an atom', () => {
+  it('should return a symbol corresponding to an atom', () => {
     expect(example(1))
       .toBe(Symbol.for('atom_x'))
   });
@@ -30,4 +30,10 @@ describe('Test atom encoder', async () => {
     expect(string(example(5)))
       .toBe('atom_x');
   });
+
+  it('should throw when encoding is not utf8', () => {
+    expect(() => string(example(6)))
+      .toThrow(/error/);
+  });
+
 });

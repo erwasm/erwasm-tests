@@ -164,7 +164,8 @@ function makeProxy(mod, modName, raw=false) {
           throw new TypeError(`Function not found. Was looking for ${modName}:${prop}/${arity}.`);
         }
         const erArgs = [...args].map((arg) => adapter.encode(mod, arg));
-        return adapter.decode(mod, func(...erArgs));
+        const ret = func(...erArgs);
+        return adapter.decode(mod, ret);
       }
     }
   });

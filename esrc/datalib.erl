@@ -1,8 +1,8 @@
 -module(datalib).
 
--export([query/1]).
+-export([query/2]).
 
-query(N) -> 
+query(N, Opt) ->
   case N of
    1 -> outer_constant;
    V when V =< 2 ->
@@ -10,8 +10,11 @@ query(N) ->
     % but compiler is not smart enought to
     % infer that V is constat, so this forces
     % us to actually call atom to binary in runtime.
-    erlang:atom_to_binary(query(V - 1), utf8);
+    OtherAtom = query(V - 1, Opt),
+    % going into recursion to serialize is not necessary,
+    % but nice touch anyway
+    query(OtherAtom, Opt);
 
-   Other when is_atom(Other) -> erlang:atom_to_binary(Other, utf8)
+   Other when is_atom(Other) -> erlang:atom_to_binary(Other, Opt)
 
   end.

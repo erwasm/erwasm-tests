@@ -14,6 +14,7 @@ example(N) ->
     % infer that V is constat, so this forces
     % us to actually call atom to binary in runtime.
     erlang:atom_to_binary(example(V - 2), utf8);
-   4 -> datalib:query(2);
-   5 -> datalib:query(atom_x)
+   4 -> datalib:query(2, utf8);
+   5 -> datalib:query(atom_x, utf8);
+   6 -> datalib:query(atom_x, utf16)
   end.
