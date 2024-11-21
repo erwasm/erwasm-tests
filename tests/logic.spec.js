@@ -84,4 +84,10 @@ describe('Test logic operators', async () => {
     });
   });
 
+  describe('badmatch', () => {
+    it('give badmatch for unknown commands', (a, b, ret) => {
+      expect(example(0, 0, 'or-what'))
+        .toBe(ret)
+    });
+  });
 });
