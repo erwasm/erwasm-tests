@@ -8,12 +8,37 @@ describe('Test atom encoder', async () => {
 
   it('should return internal representation of an atom (raw)', () => {
     expect(exampleRaw(0x1F))
-      .toBe((5 << 6) | 0xB)
+      .toBe((9 << 6) | 0xB)
   });
 
   it('should return a symbol corresponding to an atom', () => {
     expect(example(1))
       .toBe(Symbol.for('atom_x'))
+  });
+
+  it('should return a symbol corresponding to an atom', () => {
+    expect(example(11))
+      .toBe(Symbol.for('atomName'))
+  });
+
+  it('should return a symbol corresponding to an atom', () => {
+    expect(example(111))
+      .toBe(Symbol.for('Atom.Dot.Name'))
+  });
+
+  it('should return a symbol corresponding to an atom', () => {
+    expect(example(12))
+      .toBe(Symbol.for('Otheratomname'))
+  });
+
+  it('should return a symbol corresponding to an atom', () => {
+    expect(example(13))
+      .toBe(Symbol.for('otheratomname'))
+  });
+
+  it('should check that atoms that differ in case are not equal', () => {
+    expect(example(14))
+      .toBe(false)
   });
 
   it('should return binary representation of an atom (ASCII)', () => {

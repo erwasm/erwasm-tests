@@ -5,6 +5,12 @@
 example(N) -> 
   case N of
    1 -> atom_x;
+   11 -> atomName;
+   111 -> 'Atom.Dot.Name';
+   12 -> 'Otheratomname';
+   13 -> otheratomname;
+   V when V > 13, V < 15 -> % force runtime equality check of previous two
+     example(V - 1) == example(V - 2);
    2 ->
     % compiler will cheat and put string literal right here
     erlang:atom_to_binary(atom_x, utf8);
