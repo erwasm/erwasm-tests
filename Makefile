@@ -5,8 +5,9 @@ DEPS=erwasm/minibeam/math.wat \
   erwasm/minibeam/minibeam_list.wat \
   erwasm/minibeam/minibeam_eq.wat \
   erwasm/minibeam/minibeam_tuple.wat \
-  erwasm/minibeam/shim.wat \
-  erwasm/minibeam/minibeam_bs.wat
+  erwasm/minibeam/minibeam_bs.wat \
+  erwasm/minibeam/minibeam_fn.wat \
+  erwasm/minibeam/shim.wat
 
 JSONE=vendor/jsone_decode.wat vendor/jsone_encode.wat
 
