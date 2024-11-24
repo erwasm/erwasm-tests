@@ -32,6 +32,10 @@ jsone%.fat.wat: jsone%.wat $(JSONE)
 atom%.fat.wat: atom%.wat esrc/datalib.erl esrc/datalib.wat
 	python watcat/watmerge.py $@ $< $(DEPS) esrc/datalib.wat
 
+fun%.fat.wat: fun%.wat esrc/fun_util.erl esrc/fun_util.wat
+	python watcat/watmerge.py $@ $< $(DEPS) esrc/fun_util.wat
+
+
 %.fat.wat: %.wat
 	python watcat/watmerge.py $@ $< $(DEPS)
 

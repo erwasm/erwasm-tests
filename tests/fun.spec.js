@@ -2,7 +2,7 @@ import { describe, it, expect, beforeAll } from 'vitest';
 import { erwImport, erwCompile, string } from '../loader';
 
 describe('Func variable', async () => {
-  erwCompile('esrc/atom_example');
+  erwCompile('esrc/fun_example');
   const { example } = await erwImport('fun_example');
 
   function call(n) {
@@ -11,6 +11,10 @@ describe('Func variable', async () => {
 
   it('should return a list', () => {
     expect(call(1)).toEqual([1,2,3]);
+  });
+
+  it('should return a list where everything is +1', () => {
+    expect(call(4)).toEqual([2,3,4]);
   });
 
   it('should return a list where everything is +1', () => {
@@ -23,6 +27,14 @@ describe('Func variable', async () => {
 
   it('should return a list where everything is +7', () => {
     expect(call(7)).toEqual([8,9,10]);
+  });
+
+  it('should return a list where everything is times ten', () => {
+    expect(call(8)).toEqual([10, 20, 30]);
+  });
+
+  it('should return a list where everything is times five', () => {
+    expect(call(9)).toEqual([5, 10, 15]);
   });
 
   it('should return a list in reverse', () => {

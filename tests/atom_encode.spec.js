@@ -8,7 +8,7 @@ describe('Test atom encoder', async () => {
 
   it('should return internal representation of an atom (raw)', () => {
     expect(exampleRaw(0x1F))
-      .toBe((9 << 6) | 0xB)
+      .toBe((10 << 6) | 0xB)
   });
 
   it('should return a symbol corresponding to an atom', () => {
